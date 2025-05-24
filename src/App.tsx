@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { Globe } from "./Globe";
+import { useState, useRef } from "react";
+import { Globe, type GlobeRef } from "./Globe";
 import "./App.css";
 
 function App() {
+  const globeRef = useRef<GlobeRef>(null);
   const [centralMeridian, setCentralMeridian] = useState(0);
   const [centralParallel, setCentralParallel] = useState(0);
 
@@ -26,10 +27,15 @@ function App() {
     setIsDarkMode(!isDarkMode);
   };
 
+  const handleDownloadSVG = () => {
+    globeRef.current?.downloadSVG();
+  };
+
   return (
     <div className={`app-container ${isDarkMode ? "dark-mode" : ""}`}>
       <div className="main-content">
         <Globe
+          ref={globeRef}
           centralMeridian={centralMeridian}
           centralParallel={centralParallel}
           onMeridianChange={setCentralMeridian}
@@ -97,6 +103,11 @@ function App() {
               className="meridian-slider"
             />
           </div>
+        </div>
+        <div className="setting-group">
+          <button onClick={handleDownloadSVG} className="download-button">
+            Download SVG
+          </button>
         </div>
       </div>
     </div>

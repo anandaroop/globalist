@@ -131,6 +131,26 @@ input:checked + .slider:before {
   margin: 0;
 }
 
+.download-button {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: #646cff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.download-button:hover {
+  background-color: #5a5ad1;
+}
+
+.download-button:active {
+  background-color: #4848b8;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -207,6 +227,18 @@ input:checked + .slider:before {
 
 .dark-mode .slider:before {
   background-color: #e0e0e0;
+}
+
+.dark-mode .download-button {
+  background-color: #646cff;
+}
+
+.dark-mode .download-button:hover {
+  background-color: #5a5ad1;
+}
+
+.dark-mode .download-button:active {
+  background-color: #4848b8;
 }
 
 @media (max-width: 768px) {
