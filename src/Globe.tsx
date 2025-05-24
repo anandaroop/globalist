@@ -6,9 +6,10 @@ import type { FeatureCollection } from "geojson";
 
 interface GlobeProps {
   centralMeridian: number;
+  isDarkMode: boolean;
 }
 
-export const Globe = ({ centralMeridian }: GlobeProps) => {
+export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
@@ -52,12 +53,29 @@ export const Globe = ({ centralMeridian }: GlobeProps) => {
       });
   }, []);
 
-  // Initialize the globe when data is loaded or dimensions change
+  // Initialize the globe when data is loaded, dimensions change, or dark mode toggles
   useEffect(() => {
     if (!geoData) return;
 
     const { width, height } = dimensions;
     const scale = Math.min(width, height) / 2.2; // Larger scale for better sizing
+
+    // Define color schemes
+    const lightTheme = {
+      ocean: "#e8e8e8",
+      oceanStroke: "#cccccc",
+      countries: "#bbbbbb",
+      countryStroke: "#ffffff",
+    };
+
+    const darkTheme = {
+      ocean: "#333333",
+      oceanStroke: "#555555",
+      countries: "#666666",
+      countryStroke: "#888888",
+    };
+
+    const colors = isDarkMode ? darkTheme : lightTheme;
 
     const svg = select(svgRef.current);
     svg.selectAll("*").remove();
@@ -81,8 +99,8 @@ export const Globe = ({ centralMeridian }: GlobeProps) => {
       .attr("class", "graticule")
       .datum(graticule)
       .attr("d", path as (object: GeoPermissibleObjects) => string | null)
-      .attr("fill", "#e8e8e8")
-      .attr("stroke", "#cccccc")
+      .attr("fill", colors.ocean)
+      .attr("stroke", colors.oceanStroke)
       .attr("stroke-width", 1);
 
     // Render countries on top of ocean
@@ -93,10 +111,10 @@ export const Globe = ({ centralMeridian }: GlobeProps) => {
       .append("path")
       .attr("class", "country")
       .attr("d", path as (object: GeoPermissibleObjects) => string | null)
-      .attr("fill", "#bbbbbb")
-      .attr("stroke", "#ffffff")
+      .attr("fill", colors.countries)
+      .attr("stroke", colors.countryStroke)
       .attr("stroke-width", 0.5);
-  }, [geoData, dimensions]);
+  }, [geoData, dimensions, isDarkMode, centralMeridian]);
 
   // Update only the projection when centralMeridian changes
   useEffect(() => {
