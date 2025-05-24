@@ -44,6 +44,14 @@ function App() {
     globeRef.current?.downloadSVG();
   };
 
+  const handleReset = () => {
+    setCentralMeridian(0);
+    setCentralParallel(0);
+    setZRotation(0);
+    setZoom(1.0);
+    setProjectionType("orthographic");
+  };
+
   return (
     <div className={`app-container ${isDarkMode ? "dark-mode" : ""}`}>
       <div className="main-content">
@@ -201,6 +209,11 @@ function App() {
         <div className="setting-group">
           <button onClick={handleDownloadSVG} className="download-button">
             Download SVG
+          </button>
+        </div>
+        <div className="setting-group">
+          <button onClick={handleReset} className="reset-button">
+            Reset
           </button>
         </div>
       </div>

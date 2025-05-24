@@ -478,7 +478,7 @@ ${svg.innerHTML}
         // Update state for slider sync
         onZoomChange(newZoom);
       },
-      [zoom, onZoomChange, projectionType, dimensions.width, dimensions.height]
+      [onZoomChange, projectionType, dimensions.width, dimensions.height]
     );
 
     // Add wheel event listener to SVG
