@@ -4,6 +4,7 @@ import "./App.css";
 
 function App() {
   const [centralMeridian, setCentralMeridian] = useState(0);
+  const [centralParallel, setCentralParallel] = useState(0);
 
   // Initialize dark mode based on system preference
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -17,6 +18,10 @@ function App() {
     setCentralMeridian(value);
   };
 
+  const handleParallelChange = (value: number) => {
+    setCentralParallel(value);
+  };
+
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -24,7 +29,11 @@ function App() {
   return (
     <div className={`app-container ${isDarkMode ? "dark-mode" : ""}`}>
       <div className="main-content">
-        <Globe centralMeridian={centralMeridian} isDarkMode={isDarkMode} />
+        <Globe
+          centralMeridian={centralMeridian}
+          centralParallel={centralParallel}
+          isDarkMode={isDarkMode}
+        />
       </div>
       <div className="settings-panel">
         <div className="settings-header">
@@ -59,6 +68,29 @@ function App() {
               onChange={(e) => handleMeridianChange(Number(e.target.value))}
               min="-180"
               max="180"
+              step="1"
+              className="meridian-slider"
+            />
+          </div>
+        </div>
+        <div className="setting-group">
+          <h4>Central parallel</h4>
+          <div className="meridian-controls">
+            <input
+              type="number"
+              value={centralParallel}
+              onChange={(e) => handleParallelChange(Number(e.target.value))}
+              min="-90"
+              max="90"
+              step="1"
+              className="meridian-input"
+            />
+            <input
+              type="range"
+              value={centralParallel}
+              onChange={(e) => handleParallelChange(Number(e.target.value))}
+              min="-90"
+              max="90"
               step="1"
               className="meridian-slider"
             />

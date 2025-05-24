@@ -5,10 +5,15 @@ import type { FeatureCollection } from "geojson";
 
 interface GlobeProps {
   centralMeridian: number;
+  centralParallel: number;
   isDarkMode: boolean;
 }
 
-export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
+export const Globe = ({
+  centralMeridian,
+  centralParallel,
+  isDarkMode,
+}: GlobeProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
@@ -83,7 +88,7 @@ export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
     const projection = geoOrthographic()
       .scale(scale)
       .translate([width / 2, height / 2])
-      .rotate([-centralMeridian, 0])
+      .rotate([-centralMeridian, -centralParallel])
       .clipAngle(90);
 
     const path = geoPath().projection(projection);
@@ -113,16 +118,16 @@ export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
       .attr("fill", colors.countries)
       .attr("stroke", colors.countryStroke)
       .attr("stroke-width", 0.5);
-  }, [geoData, dimensions, isDarkMode, centralMeridian]);
+  }, [geoData, dimensions, isDarkMode, centralMeridian, centralParallel]);
 
-  // Update only the projection when centralMeridian changes
+  // Update only the projection when centralMeridian or centralParallel changes
   useEffect(() => {
     if (!geoData || !projectionRef.current || !pathRef.current) return;
 
     const svg = select(svgRef.current);
 
     // Update projection rotation
-    projectionRef.current.rotate([-centralMeridian, 0]);
+    projectionRef.current.rotate([-centralMeridian, -centralParallel]);
 
     // Update all paths with new projection
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -130,7 +135,7 @@ export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     svg.select(".graticule").attr("d", pathRef.current as any);
-  }, [centralMeridian, geoData]);
+  }, [centralMeridian, centralParallel, geoData]);
 
   return (
     <div
