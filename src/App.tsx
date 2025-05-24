@@ -32,6 +32,8 @@ function App() {
         <Globe
           centralMeridian={centralMeridian}
           centralParallel={centralParallel}
+          onMeridianChange={setCentralMeridian}
+          onParallelChange={setCentralParallel}
           isDarkMode={isDarkMode}
         />
       </div>

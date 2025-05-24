@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { select } from "d3-selection";
 import { geoOrthographic, geoPath } from "d3-geo";
 import type { FeatureCollection } from "geojson";
@@ -6,12 +6,16 @@ import type { FeatureCollection } from "geojson";
 interface GlobeProps {
   centralMeridian: number;
   centralParallel: number;
+  onMeridianChange: (value: number) => void;
+  onParallelChange: (value: number) => void;
   isDarkMode: boolean;
 }
 
 export const Globe = ({
   centralMeridian,
   centralParallel,
+  onMeridianChange,
+  onParallelChange,
   isDarkMode,
 }: GlobeProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -20,6 +24,11 @@ export const Globe = ({
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const projectionRef = useRef<ReturnType<typeof geoOrthographic> | null>(null);
   const pathRef = useRef<ReturnType<typeof geoPath> | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartRef = useRef<{
+    mouse: [number, number];
+    rotation: [number, number, number];
+  } | null>(null);
 
   // Calculate responsive dimensions
   const updateDimensions = () => {
@@ -137,6 +146,245 @@ export const Globe = ({
     svg.select(".graticule").attr("d", pathRef.current as any);
   }, [centralMeridian, centralParallel, geoData]);
 
+  // Convert screen coordinates to trackball sphere coordinates
+  const mouseToSphere = useCallback(
+    (
+      x: number,
+      y: number,
+      width: number,
+      height: number
+    ): [number, number, number] => {
+      // Normalize coordinates to [-1, 1] range
+      const nx = (x - width / 2) / (Math.min(width, height) / 2);
+      const ny = -(y - height / 2) / (Math.min(width, height) / 2); // Invert y
+
+      const r2 = nx * nx + ny * ny;
+      if (r2 <= 1) {
+        // Inside sphere - project to sphere surface
+        return [nx, ny, Math.sqrt(1 - r2)];
+      } else {
+        // Outside sphere - project to edge
+        const r = Math.sqrt(r2);
+        return [nx / r, ny / r, 0];
+      }
+    },
+    []
+  );
+
+  // Calculate rotation from two sphere points
+  const rotationFromVectors = useCallback(
+    (
+      v0: [number, number, number],
+      v1: [number, number, number]
+    ): [number, number, number] => {
+      // Calculate rotation axis (cross product)
+      const axis = [
+        v0[1] * v1[2] - v0[2] * v1[1],
+        v0[2] * v1[0] - v0[0] * v1[2],
+        v0[0] * v1[1] - v0[1] * v1[0],
+      ];
+
+      // Calculate rotation angle
+      const dot = v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2];
+      const angle = Math.acos(Math.max(-1, Math.min(1, dot)));
+
+      // Convert to Euler angles (approximation for small rotations)
+      const k = angle / Math.sin(angle) || 0;
+      return [
+        (-axis[1] * k * 180) / Math.PI, // longitude (yaw)
+        (axis[0] * k * 180) / Math.PI, // latitude (pitch)
+        0, // roll (not used)
+      ];
+    },
+    []
+  );
+
+  // Drag handlers
+  const handleMouseDown = useCallback(
+    (event: React.MouseEvent) => {
+      if (!svgRef.current) return;
+
+      const rect = svgRef.current.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      setIsDragging(true);
+      dragStartRef.current = {
+        mouse: [x, y],
+        rotation: [centralMeridian, centralParallel, 0],
+      };
+
+      event.preventDefault();
+    },
+    [centralMeridian, centralParallel]
+  );
+
+  const handleMouseMove = useCallback(
+    (event: React.MouseEvent) => {
+      if (!isDragging || !dragStartRef.current || !svgRef.current) return;
+
+      const rect = svgRef.current.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      // Get sphere coordinates for start and current positions
+      const v0 = mouseToSphere(
+        dragStartRef.current.mouse[0],
+        dragStartRef.current.mouse[1],
+        rect.width,
+        rect.height
+      );
+      const v1 = mouseToSphere(x, y, rect.width, rect.height);
+
+      // Calculate rotation
+      const deltaRotation = rotationFromVectors(v0, v1);
+
+      // Apply rotation to initial state
+      const newMeridian = dragStartRef.current.rotation[0] + deltaRotation[0];
+      const newParallel = Math.max(
+        -90,
+        Math.min(90, dragStartRef.current.rotation[1] + deltaRotation[1])
+      );
+
+      onMeridianChange(newMeridian);
+      onParallelChange(newParallel);
+    },
+    [
+      isDragging,
+      mouseToSphere,
+      rotationFromVectors,
+      onMeridianChange,
+      onParallelChange,
+    ]
+  );
+
+  const handleMouseUp = useCallback(() => {
+    setIsDragging(false);
+    dragStartRef.current = null;
+  }, []);
+
+  // Touch handlers
+  const handleTouchStart = useCallback(
+    (event: React.TouchEvent) => {
+      if (event.touches.length === 1 && svgRef.current) {
+        const rect = svgRef.current.getBoundingClientRect();
+        const touch = event.touches[0];
+        const x = touch.clientX - rect.left;
+        const y = touch.clientY - rect.top;
+
+        setIsDragging(true);
+        dragStartRef.current = {
+          mouse: [x, y],
+          rotation: [centralMeridian, centralParallel, 0],
+        };
+
+        event.preventDefault();
+      }
+    },
+    [centralMeridian, centralParallel]
+  );
+
+  const handleTouchMove = useCallback(
+    (event: React.TouchEvent) => {
+      if (
+        !isDragging ||
+        !dragStartRef.current ||
+        !svgRef.current ||
+        event.touches.length !== 1
+      )
+        return;
+
+      const rect = svgRef.current.getBoundingClientRect();
+      const touch = event.touches[0];
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+
+      const v0 = mouseToSphere(
+        dragStartRef.current.mouse[0],
+        dragStartRef.current.mouse[1],
+        rect.width,
+        rect.height
+      );
+      const v1 = mouseToSphere(x, y, rect.width, rect.height);
+
+      const deltaRotation = rotationFromVectors(v0, v1);
+
+      const newMeridian = dragStartRef.current.rotation[0] + deltaRotation[0];
+      const newParallel = Math.max(
+        -90,
+        Math.min(90, dragStartRef.current.rotation[1] + deltaRotation[1])
+      );
+
+      onMeridianChange(newMeridian);
+      onParallelChange(newParallel);
+
+      event.preventDefault();
+    },
+    [
+      isDragging,
+      mouseToSphere,
+      rotationFromVectors,
+      onMeridianChange,
+      onParallelChange,
+    ]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+    dragStartRef.current = null;
+  }, []);
+
+  // Global event listeners for dragging outside the SVG
+  useEffect(() => {
+    if (!isDragging || !dragStartRef.current || !svgRef.current) return;
+
+    const handleGlobalMouseMove = (event: MouseEvent) => {
+      if (!svgRef.current || !dragStartRef.current) return;
+
+      const rect = svgRef.current.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      const v0 = mouseToSphere(
+        dragStartRef.current.mouse[0],
+        dragStartRef.current.mouse[1],
+        rect.width,
+        rect.height
+      );
+      const v1 = mouseToSphere(x, y, rect.width, rect.height);
+
+      const deltaRotation = rotationFromVectors(v0, v1);
+
+      const newMeridian = dragStartRef.current.rotation[0] + deltaRotation[0];
+      const newParallel = Math.max(
+        -90,
+        Math.min(90, dragStartRef.current.rotation[1] + deltaRotation[1])
+      );
+
+      onMeridianChange(newMeridian);
+      onParallelChange(newParallel);
+    };
+
+    const handleGlobalMouseUp = () => {
+      setIsDragging(false);
+      dragStartRef.current = null;
+    };
+
+    document.addEventListener("mousemove", handleGlobalMouseMove);
+    document.addEventListener("mouseup", handleGlobalMouseUp);
+
+    return () => {
+      document.removeEventListener("mousemove", handleGlobalMouseMove);
+      document.removeEventListener("mouseup", handleGlobalMouseUp);
+    };
+  }, [
+    isDragging,
+    mouseToSphere,
+    rotationFromVectors,
+    onMeridianChange,
+    onParallelChange,
+  ]);
+
   return (
     <div
       ref={containerRef}
@@ -148,7 +396,19 @@ export const Globe = ({
         alignItems: "center",
       }}
     >
-      <svg ref={svgRef}></svg>
+      <svg
+        ref={svgRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          cursor: isDragging ? "grabbing" : "grab",
+          touchAction: "none",
+        }}
+      ></svg>
     </div>
   );
 };
