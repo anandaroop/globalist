@@ -1,10 +1,10 @@
 ---
-mode: 'agent'
+mode: "agent"
 ---
 
 # Instructions
 
-Set up a new project with the following listed requirements. 
+Set up a new project with the following listed requirements.
 
 If there is a starter template that helps accomplish this, use it. If not, create a new project from scratch.
 
@@ -32,10 +32,10 @@ Finally prepare a commit with the message "chore: setup project" and allow me to
 
 - **Code quality**
 
-    - **Formatter**: prettier (prefer double quotes)
+  - **Formatter**: prettier (prefer double quotes)
 
-    - **Linter**: eslint with typescript support (only for code quality, no formatting. Leave that to prettier)
+  - **Linter**: eslint with typescript support (only for code quality, no formatting. Leave that to prettier)
 
-    - **Git hooks**: husky with lint-staged
+  - **Git hooks**: husky with lint-staged
 
-    - **Git commit messages**: commitlint with conventional commits
+  - **Git commit messages**: commitlint with conventional commits
