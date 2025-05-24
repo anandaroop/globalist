@@ -241,6 +241,28 @@ input:checked + .slider:before {
   background-color: #4848b8;
 }
 
+.projection-controls {
+  display: flex;
+  gap: 1rem;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+  cursor: pointer;
+}
+
+.dark-mode .radio-option {
+  color: #e0e0e0;
+}
+
 @media (max-width: 768px) {
   .app-container {
     flex-direction: column;

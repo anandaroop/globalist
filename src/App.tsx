@@ -7,6 +7,9 @@ function App() {
   const [centralMeridian, setCentralMeridian] = useState(0);
   const [centralParallel, setCentralParallel] = useState(0);
   const [zRotation, setZRotation] = useState(0);
+  const [projectionType, setProjectionType] = useState<
+    "orthographic" | "satellite"
+  >("orthographic");
 
   // Initialize dark mode based on system preference
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -44,6 +47,7 @@ function App() {
           centralMeridian={centralMeridian}
           centralParallel={centralParallel}
           zRotation={zRotation}
+          projectionType={projectionType}
           onMeridianChange={setCentralMeridian}
           onParallelChange={setCentralParallel}
           isDarkMode={isDarkMode}
@@ -61,6 +65,37 @@ function App() {
                 onChange={toggleDarkMode}
               />
               <span className="slider"></span>
+            </label>
+          </div>
+        </div>
+        <div className="setting-group">
+          <h4>Projection</h4>
+          <div className="projection-controls">
+            <label className="radio-option">
+              <input
+                type="radio"
+                value="orthographic"
+                checked={projectionType === "orthographic"}
+                onChange={(e) =>
+                  setProjectionType(
+                    e.target.value as "orthographic" | "satellite"
+                  )
+                }
+              />
+              Orthographic
+            </label>
+            <label className="radio-option">
+              <input
+                type="radio"
+                value="satellite"
+                checked={projectionType === "satellite"}
+                onChange={(e) =>
+                  setProjectionType(
+                    e.target.value as "orthographic" | "satellite"
+                  )
+                }
+              />
+              Satellite
             </label>
           </div>
         </div>

@@ -8,12 +8,14 @@ import {
 } from "react";
 import { select } from "d3-selection";
 import { geoOrthographic, geoPath } from "d3-geo";
+import { geoSatellite } from "d3-geo-projection";
 import type { FeatureCollection } from "geojson";
 
 interface GlobeProps {
   centralMeridian: number;
   centralParallel: number;
   zRotation: number;
+  projectionType: "orthographic" | "satellite";
   onMeridianChange: (value: number) => void;
   onParallelChange: (value: number) => void;
   isDarkMode: boolean;
@@ -29,6 +31,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
       centralMeridian,
       centralParallel,
       zRotation,
+      projectionType,
       onMeridianChange,
       onParallelChange,
       isDarkMode,
@@ -152,11 +155,19 @@ ${svg.innerHTML}
       svg.selectAll("*").remove();
       svg.attr("width", width).attr("height", height);
 
-      const projection = geoOrthographic()
-        .scale(scale)
-        .translate([width / 2, height / 2])
-        .rotate([-centralMeridian, -centralParallel, zRotation])
-        .clipAngle(90);
+      const projection =
+        projectionType === "satellite"
+          ? geoSatellite()
+              .scale(scale)
+              .translate([width / 2, height / 2])
+              .rotate([-centralMeridian, -centralParallel, zRotation])
+              .distance(2.5)
+              .clipAngle((Math.acos(1 / 2.5) * 180) / Math.PI)
+          : geoOrthographic()
+              .scale(scale)
+              .translate([width / 2, height / 2])
+              .rotate([-centralMeridian, -centralParallel, zRotation])
+              .clipAngle(90);
 
       const path = geoPath().projection(projection);
 
@@ -192,6 +203,7 @@ ${svg.innerHTML}
       centralMeridian,
       centralParallel,
       zRotation,
+      projectionType,
     ]);
 
     // Update only the projection when centralMeridian or centralParallel changes
@@ -213,7 +225,7 @@ ${svg.innerHTML}
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       svg.select(".graticule").attr("d", pathRef.current as any);
-    }, [centralMeridian, centralParallel, zRotation, geoData]);
+    }, [centralMeridian, centralParallel, zRotation, geoData, projectionType]);
 
     // Convert screen coordinates to trackball sphere coordinates
     const mouseToSphere = useCallback(
