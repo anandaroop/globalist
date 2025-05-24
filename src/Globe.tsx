@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { select } from "d3-selection";
 import { geoOrthographic, geoPath } from "d3-geo";
-import type { GeoPermissibleObjects } from "d3-geo";
 import type { FeatureCollection } from "geojson";
 
 interface GlobeProps {
@@ -14,8 +13,8 @@ export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
-  const projectionRef = useRef<d3.GeoProjection | null>(null);
-  const pathRef = useRef<d3.GeoPath | null>(null);
+  const projectionRef = useRef<ReturnType<typeof geoOrthographic> | null>(null);
+  const pathRef = useRef<ReturnType<typeof geoPath> | null>(null);
 
   // Calculate responsive dimensions
   const updateDimensions = () => {
@@ -93,12 +92,12 @@ export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
     pathRef.current = path;
 
     // Add ocean sphere (water background) first
-    const graticule = { type: "Sphere" };
+    const graticule = { type: "Sphere" } as { type: "Sphere" };
     svg
       .append("path")
       .attr("class", "graticule")
       .datum(graticule)
-      .attr("d", path as (object: GeoPermissibleObjects) => string | null)
+      .attr("d", path)
       .attr("fill", colors.ocean)
       .attr("stroke", colors.oceanStroke)
       .attr("stroke-width", 1);
@@ -110,7 +109,7 @@ export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
       .enter()
       .append("path")
       .attr("class", "country")
-      .attr("d", path as (object: GeoPermissibleObjects) => string | null)
+      .attr("d", path)
       .attr("fill", colors.countries)
       .attr("stroke", colors.countryStroke)
       .attr("stroke-width", 0.5);
@@ -126,19 +125,11 @@ export const Globe = ({ centralMeridian, isDarkMode }: GlobeProps) => {
     projectionRef.current.rotate([-centralMeridian, 0]);
 
     // Update all paths with new projection
-    svg
-      .selectAll(".country")
-      .attr(
-        "d",
-        pathRef.current as (object: GeoPermissibleObjects) => string | null
-      );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    svg.selectAll(".country").attr("d", pathRef.current as any);
 
-    svg
-      .select(".graticule")
-      .attr(
-        "d",
-        pathRef.current as (object: GeoPermissibleObjects) => string | null
-      );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    svg.select(".graticule").attr("d", pathRef.current as any);
   }, [centralMeridian, geoData]);
 
   return (
