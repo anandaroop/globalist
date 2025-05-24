@@ -13,6 +13,7 @@ import type { FeatureCollection } from "geojson";
 interface GlobeProps {
   centralMeridian: number;
   centralParallel: number;
+  zRotation: number;
   onMeridianChange: (value: number) => void;
   onParallelChange: (value: number) => void;
   isDarkMode: boolean;
@@ -27,6 +28,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
     {
       centralMeridian,
       centralParallel,
+      zRotation,
       onMeridianChange,
       onParallelChange,
       isDarkMode,
@@ -64,12 +66,18 @@ ${svg.innerHTML}
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `globe-${centralMeridian.toFixed(1)}-${centralParallel.toFixed(1)}.svg`;
+      link.download = `globe-${centralMeridian.toFixed(1)}-${centralParallel.toFixed(1)}-${zRotation.toFixed(1)}.svg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-    }, [dimensions.width, dimensions.height, centralMeridian, centralParallel]);
+    }, [
+      dimensions.width,
+      dimensions.height,
+      centralMeridian,
+      centralParallel,
+      zRotation,
+    ]);
 
     // Expose downloadSVG method via ref
     useImperativeHandle(
@@ -147,7 +155,7 @@ ${svg.innerHTML}
       const projection = geoOrthographic()
         .scale(scale)
         .translate([width / 2, height / 2])
-        .rotate([-centralMeridian, -centralParallel])
+        .rotate([-centralMeridian, -centralParallel, zRotation])
         .clipAngle(90);
 
       const path = geoPath().projection(projection);
@@ -177,7 +185,14 @@ ${svg.innerHTML}
         .attr("fill", colors.countries)
         .attr("stroke", colors.countryStroke)
         .attr("stroke-width", 0.5);
-    }, [geoData, dimensions, isDarkMode, centralMeridian, centralParallel]);
+    }, [
+      geoData,
+      dimensions,
+      isDarkMode,
+      centralMeridian,
+      centralParallel,
+      zRotation,
+    ]);
 
     // Update only the projection when centralMeridian or centralParallel changes
     useEffect(() => {
@@ -186,7 +201,11 @@ ${svg.innerHTML}
       const svg = select(svgRef.current);
 
       // Update projection rotation
-      projectionRef.current.rotate([-centralMeridian, -centralParallel]);
+      projectionRef.current.rotate([
+        -centralMeridian,
+        -centralParallel,
+        zRotation,
+      ]);
 
       // Update all paths with new projection
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -194,7 +213,7 @@ ${svg.innerHTML}
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       svg.select(".graticule").attr("d", pathRef.current as any);
-    }, [centralMeridian, centralParallel, geoData]);
+    }, [centralMeridian, centralParallel, zRotation, geoData]);
 
     // Convert screen coordinates to trackball sphere coordinates
     const mouseToSphere = useCallback(

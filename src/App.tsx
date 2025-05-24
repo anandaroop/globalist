@@ -6,6 +6,7 @@ function App() {
   const globeRef = useRef<GlobeRef>(null);
   const [centralMeridian, setCentralMeridian] = useState(0);
   const [centralParallel, setCentralParallel] = useState(0);
+  const [zRotation, setZRotation] = useState(0);
 
   // Initialize dark mode based on system preference
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -23,6 +24,10 @@ function App() {
     setCentralParallel(value);
   };
 
+  const handleZRotationChange = (value: number) => {
+    setZRotation(value);
+  };
+
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -38,6 +43,7 @@ function App() {
           ref={globeRef}
           centralMeridian={centralMeridian}
           centralParallel={centralParallel}
+          zRotation={zRotation}
           onMeridianChange={setCentralMeridian}
           onParallelChange={setCentralParallel}
           isDarkMode={isDarkMode}
@@ -99,6 +105,29 @@ function App() {
               onChange={(e) => handleParallelChange(Number(e.target.value))}
               min="-90"
               max="90"
+              step="1"
+              className="meridian-slider"
+            />
+          </div>
+        </div>
+        <div className="setting-group">
+          <h4>Z-axis rotation</h4>
+          <div className="meridian-controls">
+            <input
+              type="number"
+              value={parseFloat(zRotation.toFixed(1))}
+              onChange={(e) => handleZRotationChange(Number(e.target.value))}
+              min="-180"
+              max="180"
+              step="0.1"
+              className="meridian-input"
+            />
+            <input
+              type="range"
+              value={zRotation}
+              onChange={(e) => handleZRotationChange(Number(e.target.value))}
+              min="-180"
+              max="180"
               step="1"
               className="meridian-slider"
             />
