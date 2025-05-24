@@ -18,7 +18,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: #f8f8f8;
 }
 
 .settings-panel {
@@ -59,6 +59,8 @@
   border-radius: 4px;
   font-size: 0.9rem;
   text-align: center;
+  background-color: white;
+  color: black;
 }
 
 .meridian-slider {

@@ -74,7 +74,18 @@ export const Globe = ({ centralMeridian }: GlobeProps) => {
     projectionRef.current = projection;
     pathRef.current = path;
 
-    // Render countries
+    // Add ocean sphere (water background) first
+    const graticule = { type: "Sphere" };
+    svg
+      .append("path")
+      .attr("class", "graticule")
+      .datum(graticule)
+      .attr("d", path as (object: GeoPermissibleObjects) => string | null)
+      .attr("fill", "#e8e8e8")
+      .attr("stroke", "#cccccc")
+      .attr("stroke-width", 1);
+
+    // Render countries on top of ocean
     svg
       .selectAll(".country")
       .data(geoData.features)
@@ -82,20 +93,9 @@ export const Globe = ({ centralMeridian }: GlobeProps) => {
       .append("path")
       .attr("class", "country")
       .attr("d", path as (object: GeoPermissibleObjects) => string | null)
-      .attr("fill", "#d3d3d3")
-      .attr("stroke", "#333")
+      .attr("fill", "#bbbbbb")
+      .attr("stroke", "#ffffff")
       .attr("stroke-width", 0.5);
-
-    // Add graticule (grid lines)
-    const graticule = { type: "Sphere" };
-    svg
-      .append("path")
-      .attr("class", "graticule")
-      .datum(graticule)
-      .attr("d", path as (object: GeoPermissibleObjects) => string | null)
-      .attr("fill", "none")
-      .attr("stroke", "#ccc")
-      .attr("stroke-width", 1);
   }, [geoData, dimensions]);
 
   // Update only the projection when centralMeridian changes
