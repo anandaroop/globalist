@@ -10,13 +10,35 @@ interface GlobeProps {
 
 export const Globe = ({ centralMeridian }: GlobeProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
+  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const projectionRef = useRef<d3.GeoProjection | null>(null);
   const pathRef = useRef<d3.GeoPath | null>(null);
 
-  const width = 800;
-  const height = 600;
-  const scale = 200;
+  // Calculate responsive dimensions
+  const updateDimensions = () => {
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+
+    // Use 80% of the smaller dimension to ensure the globe fits
+    const size = Math.min(containerWidth, containerHeight) * 0.8;
+
+    setDimensions({ width: size, height: size });
+  };
+
+  // Update dimensions on mount and resize
+  useEffect(() => {
+    updateDimensions();
+
+    const handleResize = () => updateDimensions();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Load GeoJSON data once on mount
   useEffect(() => {
@@ -30,9 +52,12 @@ export const Globe = ({ centralMeridian }: GlobeProps) => {
       });
   }, []);
 
-  // Initialize the globe once when data is loaded
+  // Initialize the globe when data is loaded or dimensions change
   useEffect(() => {
     if (!geoData) return;
+
+    const { width, height } = dimensions;
+    const scale = Math.min(width, height) / 2.2; // Larger scale for better sizing
 
     const svg = select(svgRef.current);
     svg.selectAll("*").remove();
@@ -71,7 +96,7 @@ export const Globe = ({ centralMeridian }: GlobeProps) => {
       .attr("fill", "none")
       .attr("stroke", "#ccc")
       .attr("stroke-width", 1);
-  }, [geoData]);
+  }, [geoData, dimensions]);
 
   // Update only the projection when centralMeridian changes
   useEffect(() => {
@@ -98,5 +123,18 @@ export const Globe = ({ centralMeridian }: GlobeProps) => {
       );
   }, [centralMeridian, geoData]);
 
-  return <svg ref={svgRef}></svg>;
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <svg ref={svgRef}></svg>
+    </div>
+  );
 };
