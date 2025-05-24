@@ -19,6 +19,7 @@ interface GlobeProps {
   projectionType: "orthographic" | "satellite";
   onMeridianChange: (value: number) => void;
   onParallelChange: (value: number) => void;
+  onZoomChange: (value: number) => void;
   isDarkMode: boolean;
 }
 
@@ -36,6 +37,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
       projectionType,
       onMeridianChange,
       onParallelChange,
+      onZoomChange,
       isDarkMode,
     },
     ref
@@ -49,6 +51,10 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
     );
     const pathRef = useRef<ReturnType<typeof geoPath> | null>(null);
     const [isDragging, setIsDragging] = useState(false);
+    const currentZoomRef = useRef(zoom); // Track current zoom value
+
+    // Keep zoom ref in sync with prop
+    currentZoomRef.current = zoom;
     const dragStartRef = useRef<{
       mouse: [number, number];
       rotation: [number, number, number];
@@ -434,6 +440,58 @@ ${svg.innerHTML}
       setIsDragging(false);
       dragStartRef.current = null;
     }, []);
+
+    // Wheel event handler for zoom
+    const handleWheel = useCallback(
+      (event: WheelEvent) => {
+        event.preventDefault();
+
+        if (!projectionRef.current || !pathRef.current || !svgRef.current)
+          return;
+
+        // Map wheel delta to zoom change (negative because scroll up should zoom in)
+        const deltaZoom = -event.deltaY * 0.001;
+        const newZoom = Math.max(
+          1.0,
+          Math.min(8.0, currentZoomRef.current + deltaZoom)
+        );
+
+        // Update ref immediately for next event
+        currentZoomRef.current = newZoom;
+
+        // Calculate new scale and update projection directly
+        const baseSize = Math.min(dimensions.width, dimensions.height);
+        const baseScale =
+          projectionType === "satellite" ? baseSize / 1.25 : baseSize / 2.15;
+        const newScale = baseScale * newZoom;
+
+        // Update existing projection scale directly (much faster than recreating)
+        projectionRef.current.scale(newScale);
+
+        // Re-render paths with updated projection
+        const svg = select(svgRef.current);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        svg.selectAll(".country").attr("d", pathRef.current as any);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        svg.select(".graticule").attr("d", pathRef.current as any);
+
+        // Update state for slider sync
+        onZoomChange(newZoom);
+      },
+      [zoom, onZoomChange, projectionType, dimensions.width, dimensions.height]
+    );
+
+    // Add wheel event listener to SVG
+    useEffect(() => {
+      const svg = svgRef.current;
+      if (!svg) return;
+
+      svg.addEventListener("wheel", handleWheel);
+
+      return () => {
+        svg.removeEventListener("wheel", handleWheel);
+      };
+    }, [handleWheel]);
 
     // Global event listeners for dragging outside the SVG
     useEffect(() => {

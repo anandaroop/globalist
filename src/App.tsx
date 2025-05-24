@@ -56,6 +56,7 @@ function App() {
           projectionType={projectionType}
           onMeridianChange={setCentralMeridian}
           onParallelChange={setCentralParallel}
+          onZoomChange={setZoom}
           isDarkMode={isDarkMode}
         />
       </div>
