@@ -15,6 +15,7 @@ interface GlobeProps {
   centralMeridian: number;
   centralParallel: number;
   zRotation: number;
+  zoom: number;
   projectionType: "orthographic" | "satellite";
   onMeridianChange: (value: number) => void;
   onParallelChange: (value: number) => void;
@@ -31,6 +32,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
       centralMeridian,
       centralParallel,
       zRotation,
+      zoom,
       projectionType,
       onMeridianChange,
       onParallelChange,
@@ -69,7 +71,7 @@ ${svg.innerHTML}
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `globe-${centralMeridian.toFixed(1)}-${centralParallel.toFixed(1)}-${zRotation.toFixed(1)}.svg`;
+      link.download = `globe-${centralMeridian.toFixed(1)}-${centralParallel.toFixed(1)}-${zRotation.toFixed(1)}-${zoom.toFixed(1)}x.svg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -80,6 +82,7 @@ ${svg.innerHTML}
       centralMeridian,
       centralParallel,
       zRotation,
+      zoom,
     ]);
 
     // Expose downloadSVG method via ref
@@ -135,10 +138,13 @@ ${svg.innerHTML}
       const baseSize = Math.min(width, height);
 
       // Empirically determined scales to make projections visually similar
-      const scale =
+      const baseScale =
         projectionType === "satellite"
           ? baseSize / 1.25 // Larger scale for satellite
           : baseSize / 2.15; // Original scale for orthographic
+
+      // Apply zoom multiplication
+      const scale = baseScale * zoom;
 
       // Define color schemes
       const lightTheme = {
@@ -209,6 +215,7 @@ ${svg.innerHTML}
       centralMeridian,
       centralParallel,
       zRotation,
+      zoom,
       projectionType,
     ]);
 
@@ -231,7 +238,14 @@ ${svg.innerHTML}
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       svg.select(".graticule").attr("d", pathRef.current as any);
-    }, [centralMeridian, centralParallel, zRotation, geoData, projectionType]);
+    }, [
+      centralMeridian,
+      centralParallel,
+      zRotation,
+      zoom,
+      geoData,
+      projectionType,
+    ]);
 
     // Convert screen coordinates to trackball sphere coordinates
     const mouseToSphere = useCallback(

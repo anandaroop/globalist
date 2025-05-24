@@ -7,6 +7,7 @@ function App() {
   const [centralMeridian, setCentralMeridian] = useState(0);
   const [centralParallel, setCentralParallel] = useState(0);
   const [zRotation, setZRotation] = useState(0);
+  const [zoom, setZoom] = useState(1.0);
   const [projectionType, setProjectionType] = useState<
     "orthographic" | "satellite"
   >("orthographic");
@@ -31,6 +32,10 @@ function App() {
     setZRotation(value);
   };
 
+  const handleZoomChange = (value: number) => {
+    setZoom(value);
+  };
+
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
   };
@@ -47,6 +52,7 @@ function App() {
           centralMeridian={centralMeridian}
           centralParallel={centralParallel}
           zRotation={zRotation}
+          zoom={zoom}
           projectionType={projectionType}
           onMeridianChange={setCentralMeridian}
           onParallelChange={setCentralParallel}
@@ -164,6 +170,29 @@ function App() {
               min="-180"
               max="180"
               step="1"
+              className="meridian-slider"
+            />
+          </div>
+        </div>
+        <div className="setting-group">
+          <h4>Zoom</h4>
+          <div className="meridian-controls">
+            <input
+              type="number"
+              value={parseFloat(zoom.toFixed(1))}
+              onChange={(e) => handleZoomChange(Number(e.target.value))}
+              min="1.0"
+              max="8.0"
+              step="0.1"
+              className="meridian-input"
+            />
+            <input
+              type="range"
+              value={zoom}
+              onChange={(e) => handleZoomChange(Number(e.target.value))}
+              min="1.0"
+              max="8.0"
+              step="0.1"
               className="meridian-slider"
             />
           </div>
