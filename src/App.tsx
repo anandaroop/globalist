@@ -57,11 +57,11 @@ function App() {
           <div className="meridian-controls">
             <input
               type="number"
-              value={centralMeridian}
+              value={parseFloat(centralMeridian.toFixed(1))}
               onChange={(e) => handleMeridianChange(Number(e.target.value))}
               min="-180"
               max="180"
-              step="1"
+              step="0.1"
               className="meridian-input"
             />
             <input
@@ -80,11 +80,11 @@ function App() {
           <div className="meridian-controls">
             <input
               type="number"
-              value={centralParallel}
+              value={parseFloat(centralParallel.toFixed(1))}
               onChange={(e) => handleParallelChange(Number(e.target.value))}
               min="-90"
               max="90"
-              step="1"
+              step="0.1"
               className="meridian-input"
             />
             <input
