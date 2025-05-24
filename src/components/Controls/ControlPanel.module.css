@@ -1,0 +1,33 @@
+.panel {
+  width: 40%;
+  padding: 2rem;
+  background-color: white;
+  border-left: 1px solid #e0e0e0;
+  overflow-y: auto;
+  color: #333;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+/* Dark mode styles */
+:global(.dark-mode) .panel {
+  background-color: #1a1a1a;
+  border-left: 1px solid #404040;
+  color: #e0e0e0;
+}
+
+@media (max-width: 768px) {
+  .panel {
+    width: 100%;
+  }
+}

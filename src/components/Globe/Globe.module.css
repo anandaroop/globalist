@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.svg {
+  touch-action: none;
+}
+
+.svg.dragging {
+  cursor: grabbing;
+}
+
+.svg.idle {
+  cursor: grab;
+}
