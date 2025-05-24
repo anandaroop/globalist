@@ -4,7 +4,14 @@ import "./App.css";
 
 function App() {
   const [centralMeridian, setCentralMeridian] = useState(0);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // Initialize dark mode based on system preference
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+    return false;
+  });
 
   const handleMeridianChange = (value: number) => {
     setCentralMeridian(value);
