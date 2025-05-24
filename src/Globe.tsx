@@ -132,7 +132,13 @@ ${svg.innerHTML}
       if (!geoData) return;
 
       const { width, height } = dimensions;
-      const scale = Math.min(width, height) / 2.2; // Larger scale for better sizing
+      const baseSize = Math.min(width, height);
+
+      // Empirically determined scales to make projections visually similar
+      const scale =
+        projectionType === "satellite"
+          ? baseSize / 1.25 // Larger scale for satellite
+          : baseSize / 2.15; // Original scale for orthographic
 
       // Define color schemes
       const lightTheme = {
@@ -161,8 +167,8 @@ ${svg.innerHTML}
               .scale(scale)
               .translate([width / 2, height / 2])
               .rotate([-centralMeridian, -centralParallel, zRotation])
-              .distance(2.5)
-              .clipAngle((Math.acos(1 / 2.5) * 180) / Math.PI)
+              .distance(2.0) // Reset to reasonable distance
+              .clipAngle((Math.acos(1 / 2.0) * 180) / Math.PI)
           : geoOrthographic()
               .scale(scale)
               .translate([width / 2, height / 2])
