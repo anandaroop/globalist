@@ -21,7 +21,7 @@ This cartographic tool allows one to create a custom globe visualization and dow
 ```bash
 # Clone the repository
 git clone <repository-url>
-cd d3globe
+cd globalist
 
 # Install dependencies
 yarn install
