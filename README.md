@@ -101,4 +101,4 @@ src/
 
 ### Data
 
-The globe uses Natural Earth country boundaries from a GeoJSON file located in `src/data/countries.geojson`. The data includes world country polygons optimized for web visualization.
+The globe uses Natural Earth country boundaries from a GeoJSON file located in `src/data/countries110.geojson`. The data includes world country polygons optimized for web visualization.

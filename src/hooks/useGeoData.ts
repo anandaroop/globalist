@@ -12,7 +12,7 @@ export const useGeoData = (): GeoDataHook => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch("/src/data/countries.geojson");
+        const response = await fetch("/src/data/countries110.geojson");
         if (!response.ok) {
           throw new Error(`Failed to load GeoJSON: ${response.statusText}`);
         }
