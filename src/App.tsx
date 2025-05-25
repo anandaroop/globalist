@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div
-      className={`${styles.container} ${state.isDarkMode ? styles.darkMode : ""}`}
+      className={`${styles.container} ${state.isDarkMode ? "dark-mode" : ""}`}
     >
       <div className={styles.mainContent}>
         <Globe

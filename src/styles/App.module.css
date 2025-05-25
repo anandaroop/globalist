@@ -14,7 +14,7 @@
 }
 
 /* Dark mode styles */
-.container.darkMode .mainContent {
+.container:global(.dark-mode) .mainContent {
   background-color: var(--color-background-dark);
 }
 
