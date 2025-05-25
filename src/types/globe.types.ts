@@ -36,7 +36,7 @@ export interface GeoDataHook {
 
 export interface DimensionsHook {
   dimensions: { width: number; height: number };
-  containerRef: React.RefObject<HTMLDivElement>;
+  containerRef: React.RefCallback<HTMLDivElement>;
 }
 
 export interface D3ProjectionHook {
