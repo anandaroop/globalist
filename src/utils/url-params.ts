@@ -1,4 +1,8 @@
-import type { ProjectionType, GlobeState } from "../types/globe.types";
+import type {
+  ProjectionType,
+  GlobeState,
+  ResolutionType,
+} from "../types/globe.types";
 import { ROTATION_LIMITS, ZOOM_LIMITS } from "./constants";
 
 interface URLParams {
@@ -7,6 +11,7 @@ interface URLParams {
   proj?: ProjectionType;
   zoom?: number;
   rot?: number;
+  res?: ResolutionType;
 }
 
 export const parseURLParams = (): URLParams => {
@@ -71,6 +76,12 @@ export const parseURLParams = (): URLParams => {
     }
   }
 
+  // Parse resolution
+  const resStr = params.get("res");
+  if (resStr === "low" || resStr === "medium") {
+    result.res = resStr;
+  }
+
   return result;
 };
 
@@ -86,6 +97,7 @@ export const getInitialStateFromURL = (
     projectionType: urlParams.proj ?? defaultState.projectionType,
     zoom: urlParams.zoom ?? defaultState.zoom,
     zRotation: urlParams.rot ?? defaultState.zRotation,
+    resolution: urlParams.res ?? defaultState.resolution,
   };
 };
 
@@ -137,6 +149,14 @@ export const updateURL = (state: Partial<GlobeState>): void => {
       params.delete("rot");
     } else {
       params.set("rot", roundedRotation.toString());
+    }
+  }
+
+  if (state.resolution !== undefined) {
+    if (state.resolution === "low") {
+      params.delete("res");
+    } else {
+      params.set("res", state.resolution);
     }
   }
 

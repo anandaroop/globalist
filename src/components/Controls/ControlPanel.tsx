@@ -1,6 +1,7 @@
-import type { GlobeState } from "../../types/globe.types";
+import type { GlobeState, ResolutionType } from "../../types/globe.types";
 import { SliderControl } from "../common/Slider";
 import { ProjectionToggle } from "./ProjectionToggle";
+import { ResolutionToggle } from "./ResolutionToggle";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { ActionButtons } from "./ActionButtons";
 import {
@@ -18,6 +19,7 @@ interface ControlPanelProps {
   onZoomChange: (value: number) => void;
   onProjectionTypeChange: (value: "orthographic" | "satellite") => void;
   onDistanceChange: (value: number) => void;
+  onResolutionChange: (value: ResolutionType) => void;
   onDarkModeToggle: () => void;
   onDownload: () => void;
   onReset: () => void;
@@ -31,6 +33,7 @@ export const ControlPanel = ({
   onZoomChange,
   onProjectionTypeChange,
   onDistanceChange,
+  onResolutionChange,
   onDarkModeToggle,
   onDownload,
   onReset,
@@ -96,6 +99,11 @@ export const ControlPanel = ({
           step={DISTANCE_LIMITS.step}
         />
       )}
+
+      <ResolutionToggle
+        value={state.resolution}
+        onChange={onResolutionChange}
+      />
 
       <ActionButtons onDownload={onDownload} onReset={onReset} />
     </div>

@@ -1,0 +1,42 @@
+.container {
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.75rem;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 1rem;
+}
+
+.radioItem {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.radioInput {
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.radioLabel {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.radioItem:hover .radioLabel {
+  color: var(--text-primary);
+}
+
+.radioInput:checked + .radioLabel {
+  color: var(--text-primary);
+  font-weight: 500;
+}

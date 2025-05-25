@@ -20,6 +20,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
       zoom,
       projectionType,
       distance,
+      resolution,
       onMeridianChange,
       onParallelChange,
       onZoomChange,
@@ -27,7 +28,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
     },
     ref
   ) => {
-    const { geoData, loading, error } = useGeoData();
+    const { geoData, loading, error } = useGeoData(resolution);
     const { dimensions, containerRef } = useDimensions();
     const { projection, path, svgRef, renderGlobe, updateProjection } =
       useD3Projection();

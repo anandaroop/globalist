@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import type { FeatureCollection } from "geojson";
-import type { GeoDataHook } from "../types/globe.types";
+import type { GeoDataHook, ResolutionType } from "../types/globe.types";
 
-export const useGeoData = (): GeoDataHook => {
+export const useGeoData = (resolution: ResolutionType = "low"): GeoDataHook => {
   const [geoData, setGeoData] = useState<FeatureCollection | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -12,7 +12,9 @@ export const useGeoData = (): GeoDataHook => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch("/src/data/countries110.geojson");
+        const fileName =
+          resolution === "low" ? "countries110.geojson" : "countries50.geojson";
+        const response = await fetch(`/src/data/${fileName}`);
         if (!response.ok) {
           throw new Error(`Failed to load GeoJSON: ${response.statusText}`);
         }
@@ -29,7 +31,7 @@ export const useGeoData = (): GeoDataHook => {
     };
 
     loadGeoData();
-  }, []);
+  }, [resolution]);
 
   return { geoData, loading, error };
 };

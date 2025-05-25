@@ -1,5 +1,9 @@
 import { useState } from "react";
-import type { GlobeState, ProjectionType } from "../types/globe.types";
+import type {
+  GlobeState,
+  ProjectionType,
+  ResolutionType,
+} from "../types/globe.types";
 import { DISTANCE_LIMITS } from "../utils/constants";
 import { getInitialStateFromURL, updateURL } from "../utils/url-params";
 
@@ -20,6 +24,7 @@ export const useGlobeState = () => {
       projectionType: "orthographic",
       isDarkMode: getInitialDarkMode(),
       distance: DISTANCE_LIMITS.default,
+      resolution: "low",
     };
     return getInitialStateFromURL(defaultState);
   };
@@ -55,6 +60,11 @@ export const useGlobeState = () => {
     setState((prev) => ({ ...prev, distance: value }));
   };
 
+  const updateResolution = (value: ResolutionType) => {
+    setState((prev) => ({ ...prev, resolution: value }));
+    updateURL({ resolution: value });
+  };
+
   const toggleDarkMode = () => {
     setState((prev) => ({ ...prev, isDarkMode: !prev.isDarkMode }));
   };
@@ -68,6 +78,7 @@ export const useGlobeState = () => {
       zoom: 1.0,
       projectionType: "orthographic",
       distance: DISTANCE_LIMITS.default,
+      resolution: "low",
     }));
 
     // Clear all URL parameters
@@ -85,6 +96,7 @@ export const useGlobeState = () => {
     updateZoom,
     updateProjectionType,
     updateDistance,
+    updateResolution,
     toggleDarkMode,
     reset,
   };

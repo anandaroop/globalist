@@ -3,6 +3,8 @@ import type { GeoProjection } from "d3-geo";
 
 export type ProjectionType = "orthographic" | "satellite";
 
+export type ResolutionType = "low" | "medium";
+
 export interface GlobeState {
   centralMeridian: number;
   centralParallel: number;
@@ -11,6 +13,7 @@ export interface GlobeState {
   projectionType: ProjectionType;
   isDarkMode: boolean;
   distance: number;
+  resolution: ResolutionType;
 }
 
 export interface GlobeProps {
@@ -20,6 +23,7 @@ export interface GlobeProps {
   zoom: number;
   projectionType: ProjectionType;
   distance: number;
+  resolution: ResolutionType;
   onMeridianChange: (value: number) => void;
   onParallelChange: (value: number) => void;
   onZoomChange: (value: number) => void;
