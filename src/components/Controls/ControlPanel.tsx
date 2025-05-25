@@ -63,21 +63,21 @@ export const ControlPanel = ({
       />
 
       <SliderControl
-        label="Z-axis rotation"
-        value={state.zRotation}
-        onChange={onZRotationChange}
-        min={ROTATION_LIMITS.z.min}
-        max={ROTATION_LIMITS.z.max}
-        step={0.1}
-      />
-
-      <SliderControl
         label="Zoom"
         value={state.zoom}
         onChange={onZoomChange}
         min={ZOOM_LIMITS.min}
         max={ZOOM_LIMITS.max}
         step={ZOOM_LIMITS.step}
+      />
+
+      <SliderControl
+        label="Z-axis rotation"
+        value={state.zRotation}
+        onChange={onZRotationChange}
+        min={ROTATION_LIMITS.z.min}
+        max={ROTATION_LIMITS.z.max}
+        step={0.1}
       />
 
       <ActionButtons onDownload={onDownload} onReset={onReset} />
