@@ -69,6 +69,12 @@ export const useGlobeState = () => {
       projectionType: "orthographic",
       distance: DISTANCE_LIMITS.default,
     }));
+
+    // Clear all URL parameters
+    if (typeof window !== "undefined") {
+      const newURL = window.location.pathname;
+      window.history.replaceState({}, "", newURL);
+    }
   };
 
   return {
