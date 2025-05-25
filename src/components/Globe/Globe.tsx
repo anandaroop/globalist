@@ -19,6 +19,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
       zRotation,
       zoom,
       projectionType,
+      distance,
       onMeridianChange,
       onParallelChange,
       onZoomChange,
@@ -97,6 +98,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
         zRotation,
         zoom,
         projectionType,
+        distance,
         isDarkMode,
       });
     }, [
@@ -108,6 +110,7 @@ export const Globe = forwardRef<GlobeRef, GlobeProps>(
       zRotation,
       zoom,
       projectionType,
+      distance,
       renderGlobe,
     ]);
 

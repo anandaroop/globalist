@@ -15,6 +15,7 @@ function App() {
     updateZRotation,
     updateZoom,
     updateProjectionType,
+    updateDistance,
     toggleDarkMode,
     reset,
   } = useGlobeState();
@@ -35,6 +36,7 @@ function App() {
           zRotation={state.zRotation}
           zoom={state.zoom}
           projectionType={state.projectionType}
+          distance={state.distance}
           onMeridianChange={updateMeridian}
           onParallelChange={updateParallel}
           onZoomChange={updateZoom}
@@ -48,6 +50,7 @@ function App() {
         onZRotationChange={updateZRotation}
         onZoomChange={updateZoom}
         onProjectionTypeChange={updateProjectionType}
+        onDistanceChange={updateDistance}
         onDarkModeToggle={toggleDarkMode}
         onDownload={handleDownloadSVG}
         onReset={reset}

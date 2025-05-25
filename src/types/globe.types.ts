@@ -10,6 +10,7 @@ export interface GlobeState {
   zoom: number;
   projectionType: ProjectionType;
   isDarkMode: boolean;
+  distance: number;
 }
 
 export interface GlobeProps {
@@ -18,6 +19,7 @@ export interface GlobeProps {
   zRotation: number;
   zoom: number;
   projectionType: ProjectionType;
+  distance: number;
   onMeridianChange: (value: number) => void;
   onParallelChange: (value: number) => void;
   onZoomChange: (value: number) => void;

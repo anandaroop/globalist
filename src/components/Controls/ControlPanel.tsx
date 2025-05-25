@@ -3,7 +3,11 @@ import { SliderControl } from "../common/Slider";
 import { ProjectionToggle } from "./ProjectionToggle";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { ActionButtons } from "./ActionButtons";
-import { ROTATION_LIMITS, ZOOM_LIMITS } from "../../utils/constants";
+import {
+  ROTATION_LIMITS,
+  ZOOM_LIMITS,
+  DISTANCE_LIMITS,
+} from "../../utils/constants";
 import styles from "./ControlPanel.module.css";
 
 interface ControlPanelProps {
@@ -13,6 +17,7 @@ interface ControlPanelProps {
   onZRotationChange: (value: number) => void;
   onZoomChange: (value: number) => void;
   onProjectionTypeChange: (value: "orthographic" | "satellite") => void;
+  onDistanceChange: (value: number) => void;
   onDarkModeToggle: () => void;
   onDownload: () => void;
   onReset: () => void;
@@ -25,6 +30,7 @@ export const ControlPanel = ({
   onZRotationChange,
   onZoomChange,
   onProjectionTypeChange,
+  onDistanceChange,
   onDarkModeToggle,
   onDownload,
   onReset,
@@ -79,6 +85,17 @@ export const ControlPanel = ({
         max={ROTATION_LIMITS.z.max}
         step={0.1}
       />
+
+      {state.projectionType === "satellite" && (
+        <SliderControl
+          label="Distance"
+          value={state.distance}
+          onChange={onDistanceChange}
+          min={DISTANCE_LIMITS.min}
+          max={DISTANCE_LIMITS.max}
+          step={DISTANCE_LIMITS.step}
+        />
+      )}
 
       <ActionButtons onDownload={onDownload} onReset={onReset} />
     </div>

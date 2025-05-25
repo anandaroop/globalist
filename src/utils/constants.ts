@@ -17,10 +17,17 @@ export const PROJECTION_CONFIG = {
     clipAngle: 90,
   },
   satellite: {
-    scaleRatio: 1.25,
+    scaleRatio: 1.95,
     distance: 2.0,
     clipAngleMultiplier: Math.PI,
   },
+} as const;
+
+export const DISTANCE_LIMITS = {
+  min: 5.0,
+  max: 15.0,
+  step: 0.1,
+  default: 10.0,
 } as const;
 
 export const RESPONSIVE_CONFIG = {

@@ -19,6 +19,7 @@ export const useD3Projection = (): D3ProjectionHook & {
     zRotation: number;
     zoom: number;
     projectionType: ProjectionType;
+    distance: number;
     isDarkMode: boolean;
   }) => void;
   updateProjection: (params: {
@@ -43,6 +44,7 @@ export const useD3Projection = (): D3ProjectionHook & {
       zRotation: number;
       zoom: number;
       projectionType: ProjectionType;
+      distance: number;
       isDarkMode: boolean;
     }) => {
       const {
@@ -53,6 +55,7 @@ export const useD3Projection = (): D3ProjectionHook & {
         zRotation,
         zoom,
         projectionType,
+        distance,
         isDarkMode,
       } = params;
 
@@ -72,7 +75,8 @@ export const useD3Projection = (): D3ProjectionHook & {
         height,
         centralMeridian,
         centralParallel,
-        zRotation
+        zRotation,
+        distance
       );
 
       const path = createGeoPath(projection);
