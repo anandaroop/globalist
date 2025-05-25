@@ -2,6 +2,7 @@ import type { GlobeState, ResolutionType } from "../../types/globe.types";
 import { SliderControl } from "../common/Slider";
 import { ProjectionToggle } from "./ProjectionToggle";
 import { ResolutionToggle } from "./ResolutionToggle";
+import { ProjectionDisplay } from "./ProjectionDisplay";
 import { DarkModeToggle } from "./DarkModeToggle";
 import { ActionButtons } from "./ActionButtons";
 import {
@@ -104,6 +105,8 @@ export const ControlPanel = ({
         value={state.resolution}
         onChange={onResolutionChange}
       />
+
+      <ProjectionDisplay state={state} />
 
       <ActionButtons onDownload={onDownload} onReset={onReset} />
     </div>
