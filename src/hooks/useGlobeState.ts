@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { GlobeState, ProjectionType } from "../types/globe.types";
 import { DISTANCE_LIMITS } from "../utils/constants";
+import { getInitialStateFromURL, updateURL } from "../utils/url-params";
 
 const getInitialDarkMode = (): boolean => {
   if (typeof window !== "undefined") {
@@ -10,34 +11,44 @@ const getInitialDarkMode = (): boolean => {
 };
 
 export const useGlobeState = () => {
-  const [state, setState] = useState<GlobeState>({
-    centralMeridian: 0,
-    centralParallel: 0,
-    zRotation: 0,
-    zoom: 1.0,
-    projectionType: "orthographic",
-    isDarkMode: getInitialDarkMode(),
-    distance: DISTANCE_LIMITS.default,
-  });
+  const getInitialState = (): GlobeState => {
+    const defaultState: GlobeState = {
+      centralMeridian: 0,
+      centralParallel: 0,
+      zRotation: 0,
+      zoom: 1.0,
+      projectionType: "orthographic",
+      isDarkMode: getInitialDarkMode(),
+      distance: DISTANCE_LIMITS.default,
+    };
+    return getInitialStateFromURL(defaultState);
+  };
+
+  const [state, setState] = useState<GlobeState>(getInitialState);
 
   const updateMeridian = (value: number) => {
     setState((prev) => ({ ...prev, centralMeridian: value }));
+    updateURL({ centralMeridian: value });
   };
 
   const updateParallel = (value: number) => {
     setState((prev) => ({ ...prev, centralParallel: value }));
+    updateURL({ centralParallel: value });
   };
 
   const updateZRotation = (value: number) => {
     setState((prev) => ({ ...prev, zRotation: value }));
+    updateURL({ zRotation: value });
   };
 
   const updateZoom = (value: number) => {
     setState((prev) => ({ ...prev, zoom: value }));
+    updateURL({ zoom: value });
   };
 
   const updateProjectionType = (value: ProjectionType) => {
     setState((prev) => ({ ...prev, projectionType: value }));
+    updateURL({ projectionType: value });
   };
 
   const updateDistance = (value: number) => {
