@@ -30,7 +30,7 @@ function App() {
     <div
       className={`${styles.container} ${state.isDarkMode ? "dark-mode" : ""}`}
     >
-      <Header />
+      <Header isDarkMode={state.isDarkMode} onDarkModeToggle={toggleDarkMode} />
       <div className={styles.content}>
         <div className={styles.mainContent}>
           <Globe
@@ -57,7 +57,6 @@ function App() {
           onProjectionTypeChange={updateProjectionType}
           onDistanceChange={updateDistance}
           onResolutionChange={updateResolution}
-          onDarkModeToggle={toggleDarkMode}
           onDownload={handleDownloadSVG}
           onReset={reset}
         />

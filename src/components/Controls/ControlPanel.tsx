@@ -3,7 +3,6 @@ import { SliderControl } from "../common/Slider";
 import { ProjectionToggle } from "./ProjectionToggle";
 import { ResolutionToggle } from "./ResolutionToggle";
 import { ProjectionDisplay } from "./ProjectionDisplay";
-import { DarkModeToggle } from "./DarkModeToggle";
 import { ActionButtons } from "./ActionButtons";
 import {
   ROTATION_LIMITS,
@@ -21,7 +20,6 @@ interface ControlPanelProps {
   onProjectionTypeChange: (value: "orthographic" | "satellite") => void;
   onDistanceChange: (value: number) => void;
   onResolutionChange: (value: ResolutionType) => void;
-  onDarkModeToggle: () => void;
   onDownload: () => void;
   onReset: () => void;
 }
@@ -35,7 +33,6 @@ export const ControlPanel = ({
   onProjectionTypeChange,
   onDistanceChange,
   onResolutionChange,
-  onDarkModeToggle,
   onDownload,
   onReset,
 }: ControlPanelProps) => {
@@ -43,10 +40,6 @@ export const ControlPanel = ({
     <div className={styles.panel}>
       <div className={styles.header}>
         <h3 className={styles.title}>Settings</h3>
-        <DarkModeToggle
-          isDarkMode={state.isDarkMode}
-          onToggle={onDarkModeToggle}
-        />
       </div>
 
       <ProjectionToggle
