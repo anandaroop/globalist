@@ -1,6 +1,6 @@
 # Globalist
 
-This single-purpose cartographic tool — available at https://anandaroop.github.io/globalist — allows a user to create a custom globe view and download the resulting vector art as an SVG file, for further customization in the illustration tool of their choice.
+This single-purpose cartographic tool — available at [https://anandaroop.github.io/globalist](https://anandaroop.github.io/globalist) — allows a user to create a custom globe view and download the resulting vector art as an SVG file, for further customization in the illustration tool of their choice.
 
 <img width="1646" alt="light" src="https://github.com/user-attachments/assets/a73b375e-e61d-4d3f-8054-c45d98aa8e2f" />
 <!--
