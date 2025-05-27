@@ -5,6 +5,8 @@ import type {
 } from "../types/globe.types";
 import { ROTATION_LIMITS, ZOOM_LIMITS, DISTANCE_LIMITS } from "./constants";
 
+let urlUpdateTimeout: NodeJS.Timeout | null = null;
+
 interface URLParams {
   lng?: number;
   lat?: number;
@@ -116,7 +118,7 @@ export const getInitialStateFromURL = (
   };
 };
 
-export const updateURL = (state: Partial<GlobeState>): void => {
+const updateURLImmediate = (state: Partial<GlobeState>): void => {
   if (typeof window === "undefined") {
     return;
   }
@@ -194,4 +196,15 @@ export const updateURL = (state: Partial<GlobeState>): void => {
 
   const newURL = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
   window.history.replaceState({}, "", newURL);
+};
+
+export const updateURL = (state: Partial<GlobeState>): void => {
+  if (urlUpdateTimeout) {
+    clearTimeout(urlUpdateTimeout);
+  }
+
+  urlUpdateTimeout = setTimeout(() => {
+    updateURLImmediate(state);
+    urlUpdateTimeout = null;
+  }, 300);
 };

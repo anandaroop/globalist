@@ -52,10 +52,13 @@ export const useGlobeState = () => {
   };
 
   const updateProjectionType = (value: ProjectionType) => {
-    setState((prev) => ({ ...prev, projectionType: value }));
-    updateURL({
-      projectionType: value,
-      distance: value === "satellite" ? state.distance : undefined,
+    setState((prev) => {
+      const newState = { ...prev, projectionType: value };
+      updateURL({
+        projectionType: value,
+        distance: value === "satellite" ? newState.distance : undefined,
+      });
+      return newState;
     });
   };
 
