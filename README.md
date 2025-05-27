@@ -1,8 +1,22 @@
 # Globalist
 
-This cartographic tool allows one to create a custom globe visualization and download the resulting SVG.
+This single-purpose cartographic tool — available at https://anandaroop.github.io/globalist — allows a user to create a custom globe view and download the resulting vector art as an SVG file, for further customization in the illustration tool of their choice.
 
-<img width="1598" alt="screencap" src="https://github.com/user-attachments/assets/93a11bb0-998b-4baf-9d0f-4306be193c32" />
+<img width="1646" alt="light" src="https://github.com/user-attachments/assets/a73b375e-e61d-4d3f-8054-c45d98aa8e2f" />
+<!--
+<img width="1646" alt="dark" src="https://github.com/user-attachments/assets/32fa1b38-78c3-4794-aa74-8b35384bb6ac" />
+-->
+
+
+It was born from my own need to have access to customizable vector globe artwork, for use in locator maps and insets that I create in the course of my [cartography projects](https://www.anandarooproy.com), such as the globe at the top right of this map:
+
+<img width="25%" alt="example" src="https://github.com/user-attachments/assets/fa74b010-ae93-4fec-bee6-f390dd74f9f9" style="margin: auto;" />
+
+Generating those globes was a somewhat fiddly and time-consuming process, thus my wish for something quick and easy.
+
+## Vibes ✨
+
+Notably, this was also an experiment in **vibe coding** with Claude Code, primarily using Claude 4 Sonnet, with a few assists by Claude 4 Opus. (And one gnarly Typescript fix via GPT 4.1)
 
 ## Features
 
