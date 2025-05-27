@@ -18,6 +18,8 @@ Generating those globes was a somewhat fiddly and time-consuming process, thus m
 
 Notably, this was also an experiment in **vibe coding** with Claude Code, primarily using Claude 4 Sonnet, with a few assists by Claude 4 Opus. (And one gnarly Typescript fix via GPT 4.1)
 
+According to [automated analysis](./scripts/analyze.rb), as of this writing about 79% of the line changes in this project were created by AI, and 21% by me.
+
 ## Features
 
 - **Dual Projection Modes** — Switch between Orthographic and Satellite views
