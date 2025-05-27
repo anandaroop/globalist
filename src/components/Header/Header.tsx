@@ -15,7 +15,7 @@ export const Header = ({ isDarkMode, onDarkModeToggle }: HeaderProps) => {
         <Text weight="light" color="gray">
           &nbsp;v1&nbsp;
         </Text>
-        <Text weight="medium" style={{ color: "var(--accent-6)" }}>
+        <Text weight="medium" style={{ color: "var(--accent-8)" }}>
           Create a custom globe view. Download vector art.
         </Text>
       </Text>
