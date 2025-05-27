@@ -2,6 +2,8 @@
 
 This cartographic tool allows one to create a custom globe visualization and download the resulting SVG.
 
+<img width="1598" alt="screencap" src="https://github.com/user-attachments/assets/93a11bb0-998b-4baf-9d0f-4306be193c32" />
+
 ## Features
 
 - **Dual Projection Modes** — Switch between Orthographic and Satellite views
