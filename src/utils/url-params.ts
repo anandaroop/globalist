@@ -3,7 +3,7 @@ import type {
   GlobeState,
   ResolutionType,
 } from "../types/globe.types";
-import { ROTATION_LIMITS, ZOOM_LIMITS } from "./constants";
+import { ROTATION_LIMITS, ZOOM_LIMITS, DISTANCE_LIMITS } from "./constants";
 
 interface URLParams {
   lng?: number;
@@ -12,6 +12,7 @@ interface URLParams {
   zoom?: number;
   rot?: number;
   res?: ResolutionType;
+  dist?: number;
 }
 
 export const parseURLParams = (): URLParams => {
@@ -82,6 +83,19 @@ export const parseURLParams = (): URLParams => {
     result.res = resStr;
   }
 
+  // Parse distance (only for satellite projection)
+  const distStr = params.get("dist");
+  if (distStr !== null) {
+    const dist = parseFloat(distStr);
+    if (
+      !isNaN(dist) &&
+      dist >= DISTANCE_LIMITS.min &&
+      dist <= DISTANCE_LIMITS.max
+    ) {
+      result.dist = dist;
+    }
+  }
+
   return result;
 };
 
@@ -98,6 +112,7 @@ export const getInitialStateFromURL = (
     zoom: urlParams.zoom ?? defaultState.zoom,
     zRotation: urlParams.rot ?? defaultState.zRotation,
     resolution: urlParams.res ?? defaultState.resolution,
+    distance: urlParams.dist ?? defaultState.distance,
   };
 };
 
@@ -107,6 +122,14 @@ export const updateURL = (state: Partial<GlobeState>): void => {
   }
 
   const params = new URLSearchParams(window.location.search);
+
+  // Remove distance parameter if switching away from satellite projection
+  if (
+    state.projectionType !== undefined &&
+    state.projectionType !== "satellite"
+  ) {
+    params.delete("dist");
+  }
 
   if (state.centralMeridian !== undefined) {
     const roundedMeridian = Math.round(state.centralMeridian * 10) / 10;
@@ -157,6 +180,15 @@ export const updateURL = (state: Partial<GlobeState>): void => {
       params.delete("res");
     } else {
       params.set("res", state.resolution);
+    }
+  }
+
+  if (state.distance !== undefined && state.projectionType !== "orthographic") {
+    const roundedDistance = Math.round(state.distance * 10) / 10;
+    if (roundedDistance === DISTANCE_LIMITS.default) {
+      params.delete("dist");
+    } else {
+      params.set("dist", roundedDistance.toString());
     }
   }
 

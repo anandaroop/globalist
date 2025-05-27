@@ -53,11 +53,15 @@ export const useGlobeState = () => {
 
   const updateProjectionType = (value: ProjectionType) => {
     setState((prev) => ({ ...prev, projectionType: value }));
-    updateURL({ projectionType: value });
+    updateURL({
+      projectionType: value,
+      distance: value === "satellite" ? state.distance : undefined,
+    });
   };
 
   const updateDistance = (value: number) => {
     setState((prev) => ({ ...prev, distance: value }));
+    updateURL({ distance: value });
   };
 
   const updateResolution = (value: ResolutionType) => {
