@@ -5,11 +5,12 @@ import type { ProjectionType } from "../types/globe.types";
 import { calculateScale } from "../utils/d3-helpers";
 import { clamp } from "../utils/math";
 import { ZOOM_LIMITS } from "../utils/constants";
+import type { GeoPath, GeoPermissibleObjects } from "d3-geo";
 
 interface UseGlobeZoomProps {
   svgRef: React.RefObject<SVGSVGElement>;
   projection: GeoProjection | null;
-  path: d3.GeoPath<d3.GeoPermissibleObjects, d3.GeoPermissibleObjects> | null;
+  path: GeoPath<GeoPermissibleObjects, GeoPermissibleObjects> | null;
   projectionType: ProjectionType;
   dimensions: { width: number; height: number };
   zoom: number;
@@ -56,8 +57,14 @@ export const useGlobeZoom = ({
 
       // Re-render paths with updated projection
       const svg = select(svgRef.current);
-      svg.selectAll(".country").attr("d", path);
-      svg.select(".graticule").attr("d", path);
+      svg.selectAll(".country").each(function (d) {
+        const el = this as SVGPathElement;
+        el.setAttribute("d", safePathCall(path, d));
+      });
+      svg.select(".graticule").each(function (d) {
+        const el = this as SVGPathElement;
+        el.setAttribute("d", safePathCall(path, d));
+      });
 
       // Update state for slider sync
       onZoomChange(newZoom);
@@ -84,4 +91,17 @@ export const useGlobeZoom = ({
       svg.removeEventListener("wheel", handleWheel);
     };
   }, [handleWheel, svgRef]);
+
+  // Helper to safely call the path generator
+  function safePathCall(
+    path: GeoPath<GeoPermissibleObjects, GeoPermissibleObjects> | null,
+    d: unknown
+  ): string {
+    if (!path) return "";
+    const result = path.call(
+      {} as GeoPermissibleObjects,
+      d as GeoPermissibleObjects
+    );
+    return typeof result === "string" ? result : "";
+  }
 };

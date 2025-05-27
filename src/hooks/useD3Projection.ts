@@ -9,6 +9,7 @@ import {
   createGeoPath,
 } from "../utils/d3-helpers";
 import { getThemeColors } from "../utils/theme";
+import type { GeoPath, GeoPermissibleObjects } from "d3-geo";
 
 export const useD3Projection = (): D3ProjectionHook & {
   renderGlobe: (params: {
@@ -30,9 +31,9 @@ export const useD3Projection = (): D3ProjectionHook & {
 } => {
   const svgRef = useRef<SVGSVGElement>(null);
   const projectionRef = useRef<GeoProjection | null>(null);
-  const pathRef = useRef<d3.GeoPath<
-    d3.GeoPermissibleObjects,
-    d3.GeoPermissibleObjects
+  const pathRef = useRef<GeoPath<
+    GeoPermissibleObjects,
+    GeoPermissibleObjects
   > | null>(null);
 
   const renderGlobe = useCallback(
@@ -90,7 +91,7 @@ export const useD3Projection = (): D3ProjectionHook & {
         .append("path")
         .attr("class", "graticule")
         .datum(graticule)
-        .attr("d", path)
+        .attr("d", path!)
         .attr("fill", colors.ocean)
         .attr("stroke", colors.oceanStroke)
         .attr("stroke-width", 1);
@@ -102,7 +103,7 @@ export const useD3Projection = (): D3ProjectionHook & {
         .enter()
         .append("path")
         .attr("class", "country")
-        .attr("d", path)
+        .attr("d", path!)
         .attr("fill", colors.countries)
         .attr("stroke", colors.countryStroke)
         .attr("stroke-width", 0.5);
@@ -130,8 +131,27 @@ export const useD3Projection = (): D3ProjectionHook & {
       ]);
 
       // Update all paths with new projection
-      svg.selectAll(".country").attr("d", pathRef.current);
-      svg.select(".graticule").attr("d", pathRef.current);
+      // Helper to safely call the path generator
+      function safePathCall(
+        path: GeoPath<GeoPermissibleObjects, GeoPermissibleObjects> | null,
+        d: unknown
+      ): string {
+        if (!path) return "";
+        const result = path.call(
+          {} as GeoPermissibleObjects,
+          d as GeoPermissibleObjects
+        );
+        return typeof result === "string" ? result : "";
+      }
+
+      svg.selectAll(".country").each(function (d) {
+        const el = this as SVGPathElement;
+        el.setAttribute("d", safePathCall(pathRef.current, d));
+      });
+      svg.select(".graticule").each(function (d) {
+        const el = this as SVGPathElement;
+        el.setAttribute("d", safePathCall(pathRef.current, d));
+      });
     },
     []
   );
@@ -139,7 +159,7 @@ export const useD3Projection = (): D3ProjectionHook & {
   return {
     projection: projectionRef.current,
     path: pathRef.current,
-    svgRef,
+    svgRef: svgRef as React.RefObject<SVGSVGElement>,
     renderGlobe,
     updateProjection,
   };

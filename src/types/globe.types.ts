@@ -1,5 +1,5 @@
 import type { FeatureCollection } from "geojson";
-import type { GeoProjection } from "d3-geo";
+import type { GeoProjection, GeoPath, GeoPermissibleObjects } from "d3-geo";
 
 export type ProjectionType = "orthographic" | "satellite";
 
@@ -47,7 +47,7 @@ export interface DimensionsHook {
 
 export interface D3ProjectionHook {
   projection: GeoProjection | null;
-  path: d3.GeoPath<d3.GeoPermissibleObjects, d3.GeoPermissibleObjects> | null;
+  path: GeoPath<GeoPermissibleObjects, GeoPermissibleObjects> | null;
   svgRef: React.RefObject<SVGSVGElement>;
 }
 
