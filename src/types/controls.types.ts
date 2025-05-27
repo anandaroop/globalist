@@ -1,5 +1,6 @@
 export interface SliderControlProps {
   label: string;
+  description?: string;
   value: number;
   onChange: (value: number) => void;
   min: number;

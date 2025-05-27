@@ -1,11 +1,11 @@
 import { useRef } from "react";
+import "@radix-ui/themes/styles.css";
+import { Theme } from "@radix-ui/themes";
 import { Globe, type GlobeRef } from "./components/Globe";
 import { ControlPanel } from "./components/Controls/ControlPanel";
 import { Header } from "./components/Header";
 import { useGlobeState } from "./hooks/useGlobeState";
-import styles from "./styles/App.module.css";
-import "./styles/globals.css";
-import "./styles/variables.css";
+import { ActionButtons } from "./components/Controls/ActionButtons";
 
 function App() {
   const globeRef = useRef<GlobeRef>(null);
@@ -27,12 +27,40 @@ function App() {
   };
 
   return (
-    <div
-      className={`${styles.container} ${state.isDarkMode ? "dark-mode" : ""}`}
+    <Theme
+      accentColor="green"
+      radius="medium"
+      scaling="100%"
+      appearance={state.isDarkMode ? "dark" : "light"}
     >
-      <Header isDarkMode={state.isDarkMode} onDarkModeToggle={toggleDarkMode} />
-      <div className={styles.content}>
-        <div className={styles.mainContent}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateRows: "60px 1fr 100px",
+          gridTemplateColumns: "3fr 2fr",
+          width: "100%",
+          height: "100vh",
+          maxHeight: "100vh",
+          overflow: "hidden",
+        }}
+      >
+        <header
+          style={{
+            gridColumn: "1 / -1",
+            borderBottom: "1px solid var(--accent-4)",
+          }}
+        >
+          <Header
+            isDarkMode={state.isDarkMode}
+            onDarkModeToggle={toggleDarkMode}
+          />
+        </header>
+        <div
+          style={{
+            gridRow: "2 / -1",
+            background: "var(--accent-1)",
+          }}
+        >
           <Globe
             ref={globeRef}
             centralMeridian={state.centralMeridian}
@@ -48,20 +76,36 @@ function App() {
             isDarkMode={state.isDarkMode}
           />
         </div>
-        <ControlPanel
-          state={state}
-          onMeridianChange={updateMeridian}
-          onParallelChange={updateParallel}
-          onZRotationChange={updateZRotation}
-          onZoomChange={updateZoom}
-          onProjectionTypeChange={updateProjectionType}
-          onDistanceChange={updateDistance}
-          onResolutionChange={updateResolution}
-          onDownload={handleDownloadSVG}
-          onReset={reset}
-        />
+        <div
+          style={{
+            borderLeft: "1px solid var(--accent-4)",
+            gridRow: "2 / -2",
+            overflowY: "auto",
+          }}
+        >
+          <ControlPanel
+            state={state}
+            onMeridianChange={updateMeridian}
+            onParallelChange={updateParallel}
+            onZRotationChange={updateZRotation}
+            onZoomChange={updateZoom}
+            onProjectionTypeChange={updateProjectionType}
+            onDistanceChange={updateDistance}
+            onResolutionChange={updateResolution}
+            onDownload={handleDownloadSVG}
+            onReset={reset}
+          />
+        </div>
+        <div
+          style={{
+            gridRow: "3 / -1",
+            borderLeft: "1px solid var(--accent-4)",
+          }}
+        >
+          <ActionButtons onDownload={handleDownloadSVG} onReset={reset} />
+        </div>
       </div>
-    </div>
+    </Theme>
   );
 }
 

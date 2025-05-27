@@ -1,6 +1,8 @@
+import { Flex, Heading, IconButton, TextField } from "@radix-ui/themes";
+import { ClipboardCopyIcon } from "@radix-ui/react-icons";
+import styles from "./ProjectionDisplay.module.css";
 import type { GlobeState } from "../../types/globe.types";
 import { generateProjString } from "../../utils/proj-string";
-import styles from "./ProjectionDisplay.module.css";
 
 interface ProjectionDisplayProps {
   state: GlobeState;
@@ -29,26 +31,30 @@ export const ProjectionDisplay = ({ state }: ProjectionDisplayProps) => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.label}>PROJ String</div>
-      <div className={styles.inputContainer}>
-        <input
+    <Flex direction="column">
+      <Heading size="3" mb="2">
+        PROJ string
+      </Heading>
+
+      <Flex width="100%" align="center" gap="3">
+        <IconButton>
+          <ClipboardCopyIcon
+            width="18"
+            height="18"
+            onClick={handleCopyToClipboard}
+            aria-label="Copy to clipboard"
+          />
+        </IconButton>
+        <TextField.Root
+          className={styles.projString}
           type="text"
           value={projString}
           readOnly
-          className={styles.input}
           onClick={handleCopyToClipboard}
           title="Click to copy to clipboard"
+          style={{ flexGrow: 1 }}
         />
-        <button
-          type="button"
-          onClick={handleCopyToClipboard}
-          className={styles.copyButton}
-          title="Copy to clipboard"
-        >
-          📋
-        </button>
-      </div>
-    </div>
+      </Flex>
+    </Flex>
   );
 };

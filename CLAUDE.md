@@ -46,6 +46,7 @@ yarn typecheck && yarn lint && yarn format:check
 - React 19.1.0 with TypeScript 5.8.3
 - Vite 6.3.5 as build tool and dev server
 - ESM module format throughout
+- Radix UI for component library and design system
 
 **Entry Points:**
 

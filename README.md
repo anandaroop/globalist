@@ -95,7 +95,8 @@ src/
   - d3-geo-projection - Extended projection library
   - d3-selection - DOM manipulation
 - **Vite 6.3.5** - Fast build tool and dev server
-- **CSS Modules** - Scoped component styling
+- **Radix** - Component library
+- **CSS Modules** - Scoped ad-hoc component styling
 - **ESLint + Prettier** - Code quality and formatting
 - **Husky + lint-staged** - Git hooks for quality enforcement
 

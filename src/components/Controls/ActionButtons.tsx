@@ -1,20 +1,20 @@
+import { Button, Flex } from "@radix-ui/themes";
 import type { ActionButtonsProps } from "../../types/controls.types";
-import { Button } from "../common/Button";
-import styles from "./ActionButtons.module.css";
 
 export const ActionButtons = ({ onDownload, onReset }: ActionButtonsProps) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.buttonGroup}>
-        <Button onClick={onReset} variant="secondary">
-          Reset
-        </Button>
-      </div>
-      <div className={styles.buttonGroup}>
-        <Button onClick={onDownload} variant="primary">
-          Download SVG
-        </Button>
-      </div>
-    </div>
+    <Flex direction="row" gap="3" p="5">
+      <Button
+        size="4"
+        onClick={onReset}
+        variant="surface"
+        style={{ width: "50%" }}
+      >
+        Reset
+      </Button>
+      <Button size="4" onClick={onDownload} style={{ width: "50%" }}>
+        Download SVG
+      </Button>
+    </Flex>
   );
 };

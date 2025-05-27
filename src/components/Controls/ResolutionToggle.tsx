@@ -1,5 +1,5 @@
+import { Flex, Heading, RadioGroup, Text } from "@radix-ui/themes";
 import type { ResolutionType } from "../../types/globe.types";
-import styles from "./ResolutionToggle.module.css";
 
 interface ResolutionToggleProps {
   value: ResolutionType;
@@ -11,32 +11,30 @@ export const ResolutionToggle = ({
   onChange,
 }: ResolutionToggleProps) => {
   return (
-    <div className={styles.container}>
-      <div className={styles.label}>Resolution</div>
-      <div className={styles.radioGroup}>
-        <label className={styles.radioItem}>
-          <input
-            type="radio"
-            name="resolution"
-            value="low"
-            checked={value === "low"}
-            onChange={() => onChange("low")}
-            className={styles.radioInput}
-          />
-          <span className={styles.radioLabel}>Low (110m)</span>
-        </label>
-        <label className={styles.radioItem}>
-          <input
-            type="radio"
-            name="resolution"
-            value="medium"
-            checked={value === "medium"}
-            onChange={() => onChange("medium")}
-            className={styles.radioInput}
-          />
-          <span className={styles.radioLabel}>Medium (50m)</span>
-        </label>
-      </div>
-    </div>
+    <Flex direction="column">
+      <Heading size="3" mb="2">
+        Resolution
+      </Heading>
+
+      <RadioGroup.Root
+        name="resolution"
+        onValueChange={(val: ResolutionType) => onChange(val)}
+      >
+        <Flex direction="column" gap="2">
+          <RadioGroup.Item value="low" checked={value === "low"}>
+            Low (1:110m)
+            <Text ml="1" style={{ color: "var(--gray-10)" }}>
+              best default, for zoomed-out views and for adjusting the globe
+            </Text>
+          </RadioGroup.Item>
+          <RadioGroup.Item value="medium" checked={value === "medium"}>
+            Medium (1:50m)
+            <Text ml="2" style={{ color: "var(--gray-10)" }}>
+              best for highly zoomed-in views
+            </Text>
+          </RadioGroup.Item>
+        </Flex>
+      </RadioGroup.Root>
+    </Flex>
   );
 };

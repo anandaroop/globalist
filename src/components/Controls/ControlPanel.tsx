@@ -3,13 +3,12 @@ import { SliderControl } from "../common/Slider";
 import { ProjectionToggle } from "./ProjectionToggle";
 import { ResolutionToggle } from "./ResolutionToggle";
 import { ProjectionDisplay } from "./ProjectionDisplay";
-import { ActionButtons } from "./ActionButtons";
 import {
   ROTATION_LIMITS,
   ZOOM_LIMITS,
   DISTANCE_LIMITS,
 } from "../../utils/constants";
-import styles from "./ControlPanel.module.css";
+import { Flex } from "@radix-ui/themes";
 
 interface ControlPanelProps {
   state: GlobeState;
@@ -33,22 +32,17 @@ export const ControlPanel = ({
   onProjectionTypeChange,
   onDistanceChange,
   onResolutionChange,
-  onDownload,
-  onReset,
 }: ControlPanelProps) => {
   return (
-    <div className={styles.panel}>
-      <div className={styles.header}>
-        <h3 className={styles.title}>Settings</h3>
-      </div>
-
+    <Flex direction="column" gap="6" p="5">
       <ProjectionToggle
         value={state.projectionType}
         onChange={onProjectionTypeChange}
       />
 
       <SliderControl
-        label="Central meridian"
+        label="Longitude"
+        description="Center the globe on this meridian of longitude"
         value={state.centralMeridian}
         onChange={onMeridianChange}
         min={ROTATION_LIMITS.meridian.min}
@@ -57,7 +51,8 @@ export const ControlPanel = ({
       />
 
       <SliderControl
-        label="Central parallel"
+        label="Latitude"
+        description="Center the globe on this parallel of latitude"
         value={state.centralParallel}
         onChange={onParallelChange}
         min={ROTATION_LIMITS.parallel.min}
@@ -67,6 +62,7 @@ export const ControlPanel = ({
 
       <SliderControl
         label="Zoom"
+        description="Enlarge the globe by this factor"
         value={state.zoom}
         onChange={onZoomChange}
         min={ZOOM_LIMITS.min}
@@ -75,7 +71,8 @@ export const ControlPanel = ({
       />
 
       <SliderControl
-        label="Z-axis rotation"
+        label="Roll"
+        description="Rotate the globe around the z-axis, perpendicular to the screen"
         value={state.zRotation}
         onChange={onZRotationChange}
         min={ROTATION_LIMITS.z.min}
@@ -85,7 +82,8 @@ export const ControlPanel = ({
 
       {state.projectionType === "satellite" && (
         <SliderControl
-          label="Distance"
+          label="Perspective"
+          description="Adjust how much of the Earth remains in view"
           value={state.distance}
           onChange={onDistanceChange}
           min={DISTANCE_LIMITS.min}
@@ -100,8 +98,6 @@ export const ControlPanel = ({
       />
 
       <ProjectionDisplay state={state} />
-
-      <ActionButtons onDownload={onDownload} onReset={onReset} />
-    </div>
+    </Flex>
   );
 };
