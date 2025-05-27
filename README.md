@@ -51,6 +51,9 @@ yarn format:check # Check code formatting
 # Build
 yarn build        # TypeScript compilation + Vite production build
 
+# Deployment
+yarn deploy       # Build and deploy to GitHub Pages
+
 # Pre-commit verification
 yarn typecheck && yarn lint && yarn format:check
 ```
@@ -85,7 +88,7 @@ src/
 │   └── constants.ts        # Configuration constants
 ├── types/                  # TypeScript type definitions
 ├── styles/                 # CSS modules and global styles
-└── data/                   # GeoJSON country data
+└── public/                 # Static assets
 ```
 
 ### Technical Stack
@@ -102,6 +105,32 @@ src/
 - **ESLint + Prettier** - Code quality and formatting
 - **Husky + lint-staged** - Git hooks for quality enforcement
 
+## Deployment
+
+### GitHub Pages
+
+The project is configured for easy deployment to GitHub Pages:
+
+```bash
+# Deploy to GitHub Pages
+yarn deploy
+```
+
+This command:
+
+1. Builds the production version of the app
+2. Publishes to the `gh-pages` branch
+3. Makes the site available at `https://yourusername.github.io/globalist/`
+
+**Setup Requirements:**
+
+1. Push your code to a GitHub repository
+2. Run `yarn deploy`
+3. Enable GitHub Pages in repository settings (source: gh-pages branch)
+
 ### Data
 
-The globe uses Natural Earth country boundaries from a GeoJSON file located in `src/data/countries110.geojson`. The data includes world country polygons optimized for web visualization.
+The globe uses Natural Earth country boundaries from GeoJSON files located in `public/`. The data includes world country polygons optimized for web visualization with two resolution options:
+
+- `countries110.geojson` - Low resolution (faster loading)
+- `countries50.geojson` - Medium resolution (more detail)
