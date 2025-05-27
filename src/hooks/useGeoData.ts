@@ -14,7 +14,7 @@ export const useGeoData = (resolution: ResolutionType = "low"): GeoDataHook => {
         setError(null);
         const fileName =
           resolution === "low" ? "countries110.geojson" : "countries50.geojson";
-        const response = await fetch(`/src/data/${fileName}`);
+        const response = await fetch(`${import.meta.env.BASE_URL}${fileName}`);
         if (!response.ok) {
           throw new Error(`Failed to load GeoJSON: ${response.statusText}`);
         }
